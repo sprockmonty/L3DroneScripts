@@ -1,0 +1,190 @@
+
+Install Vmware Workstation 12 Pro
+Install Ubuntu LTS
+
+Password is rosftw
+
+Run commands with $ from the terminal
+
+Some desktop recording software (useful for recording results)
+$ sudo apt-get install recordmydesktop
+
+Download project from github:
+run
+
+$sudo apt-get install git
+$ mkdir -p ~/src
+$ cd ~/src
+$ git clone -b L3-application https://github.com/sprockmonty/Firmware.git 
+$ cd Firmware
+
+
+
+Test with script gazeboVmWork.sh:
+        1. from terminal (in the Firmware directory) run $ chmod +x gazeboVmWork.sh
+        2. run script using $ ./gazeboVmWork.sh "gazebo"
+
+
+$ sudo usermod -a -G dialout $USER
+
+(From px4.io install instructions)
+$ sudo add-apt-repository ppa:george-edison55/cmake-3.x -y
+$ sudo apt-get update
+$ sudo apt-get install python-argparse git-core wget zip \
+    python-empy qtcreator cmake build-essential genromfs -y
+# simulation tools
+$ sudo apt-get install ant 
+$ sudo apt-get install protobuf-compiler 
+$ sudo apt-get install libeigen3-dev 
+$ sudo apt-get install libopencv-dev 
+$ sudo apt-get install openjdk-8-jdk 
+$ sudo apt-get install openjdk-8-jre  
+$ sudo apt-get install python-pip
+$ sudo pip install pymavlink pyserial 
+# required python packages
+$ sudo -H pip install pandas jinja2
+
+
+$ sudo apt-get remove modemmanager
+$ sudo apt-get install python-serial openocd \
+    flex bison libncurses5-dev autoconf texinfo build-essential \
+    libftdi-dev libtool zlib1g-dev \
+    python-empy  -y
+$ sudo apt-get remove gdb-arm-none-eabi binutils-arm-none-eabi gcc-arm-embedded
+$ sudo add-apt-repository --remove ppa:team-gcc-arm-embedded/ppa
+
+run toolchainInstall.sh script:
+        1. Download script
+        2. from terminal (in the download directory) run $ chmod +x toolchainInstall.sh
+        3. run script using ./toolchainInstall.sh
+
+$ sudo apt-get install libc6:i386 libgcc1:i386 libstdc++5:i386 libstdc++6:i386
+
+
+Test using:
+$ arm-none-eabi-gcc --version
+Should see copyright information
+
+
+
+
+Still inside Firmware directory, run
+$ make posix jmavsim
+$ make px4fmu-v2_default
+
+
+Install ROS:
+$ sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
+$ sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
+$ sudo apt-get update
+$ sudo apt-get install ros-kinetic-desktop-full
+$ sudo rosdep init
+$ rosdep update
+$ echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+$ sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential
+
+
+Install mavros:
+$ sudo apt-get install python-wstool python-rosinstall-generator python-catkin-tools -y
+$ wstool init ~/catkin_ws/src
+$ rosinstall_generator --upstream mavros | tee /tmp/mavros.rosinstall
+$ rosinstall_generator mavlink | tee -a /tmp/mavros.rosinstall
+$ wstool merge -t src /tmp/mavros.rosinstall
+$ wstool update -t src
+$ sudo rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
+$ catkin build
+$ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+$ source ~/.bashrc
+$ sudo apt-get install ros-kinetic-mavros ros-kinetic-mavros-extras
+$ sudo find /home/arl/.ros/ -type d -exec chmod 777 {} \;
+
+Update packages:
+$ sudo apt-get dist-upgrade
+
+Create application:
+create .c file somewhere in src folder inside Firmware project folder
+add .c file location (relative to Firmware/src location) to set(config _module_list) section in  Firmware/cmake/configs/nuttx_px4fmu-v2_default.cmake file
+cd to Firmware project folder
+build application by running $ make px4fmu-v2_default
+upload by connecting pixhawk and running make px4fmu-v2_default
+
+Connecting to pixhawk terminal:
+run $ ./Tools/mavlink_shell.py /dev/ttyACM0
+
+
+
+
+
+
+
+
+
+
+Commands that should be added somewhere:
+learn c using lynda learning c course
+Learn about subsumption architecture
+Learn about publish/subscribe messaging
+
+
+$ git clone https://github.com/Dronecode/sitl_gazebo.git
+
+
+Add to bashrc file:
+# Set the plugin path so Gazebo finds our model and sim
+export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:$HOME/src/sitl_gazebo/Build
+# Set the model path so Gazebo finds the airframes
+export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:$HOME/src/sitl_gazebo/models
+# Set path to sitl_gazebo repository
+export SITL_GAZEBO_PATH=$HOME/src/sitl_gazebo
+
+
+
+From inside Build folder:
+$ cd Build
+$ cmake ..
+$ make
+
+
+
+PX$Flow commands:
+$ git clone https://github.com/PX4/Flow.git
+$ make archives
+$ make
+
+
+
+
+General notes:
+use param to set parameters in pxh shell
+
+Enable external heading integration 
+	pxh> param set ATT_EXT_HDG_M 1 
+Set sensor orientation
+	pxh> param set SENS_FLOW_ROT 6
+Change system estimators
+Navigate to the Firmware/src/modules/systemlib folder
+Edit the system_params.c file to change SYS_MC_EST_GROUP from 2 to 1
+
+
+Uorb commands and framework
+listen to topics:
+	pxh> listener TOPIC
+See publishing frequency of each topic:
+	pxh> uorb top
+
+
+ROS Notes:
+
+FOR OFFBOARD TO WORK THE FOLLOWING MUST BE RUN
+	pxh> param set NAV_RCL_ACT 0
+
+Use /mavros/setpoint_attitude/attitude topic to set attitude?
+Location could use /mavros/setpoint_position/local
+SLAM
+/mavros/local_position is direct output of internal ekf
+
+
+rosservice
+rostopic
+rosmsg
