@@ -98,9 +98,19 @@ $ echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
 $ source ~/.bashrc
 $ sudo apt-get install ros-kinetic-mavros ros-kinetic-mavros-extras
 $ sudo find /home/arl/.ros/ -type d -exec chmod 777 {} \;
+$ roscd mavros
+$ cd launch
+Then edit the px4_pluginlists.yaml file and delete the '- distance_sensor' line
+$ cd ~/catkin_ws
+$ catkin build
 
 Update packages:
 $ sudo apt-get dist-upgrade
+
+
+
+
+
 
 Create application:
 create .c file somewhere in src folder inside Firmware project folder
@@ -147,7 +157,7 @@ $ make
 
 
 
-PX$Flow commands:
+PX4Flow commands:
 $ git clone https://github.com/PX4/Flow.git
 $ make archives
 $ make
@@ -172,6 +182,13 @@ listen to topics:
 	pxh> listener TOPIC
 See publishing frequency of each topic:
 	pxh> uorb top
+
+
+
+
+gazebo models are located in /home/arl/src/Firmware/Tools/sitl_gazebo/models
+
+
 
 
 ROS Notes:

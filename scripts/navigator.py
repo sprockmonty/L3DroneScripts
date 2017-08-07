@@ -68,7 +68,6 @@ class stateManager: #class for monitoring and changing state of the controller
         self._mode = msg.mode
         rospy.logwarn("Connected is {}, armed is {}, mode is {} ".format(self._isConnected, self._isArmed, self._mode)) #some status info
 
-
     def armRequest(self):
         rospy.wait_for_service('/mavros/set_mode')
         try:
@@ -124,7 +123,7 @@ def main():
 
 
     while not rospy.is_shutdown():
-        controller.setVel([0,0,0])
+        controller.setVel([0.2,0,0])
         controller.publishTargetPose(stateManagerInstance)
         stateManagerInstance.incrementLoop()
         rate.sleep()    #sleep at the set rate
