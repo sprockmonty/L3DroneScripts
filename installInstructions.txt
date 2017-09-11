@@ -108,7 +108,9 @@ Update packages:
 $ sudo apt-get dist-upgrade
 
 
-
+Install QGroundControl:
+$ sudo apt-get install espeak libespeak-dev libudev-dev libsdl2-dev
+Download and install
 
 
 
@@ -124,12 +126,10 @@ run $ ./Tools/mavlink_shell.py /dev/ttyACM0
 
 
 
-
-
-
-
-
-
+Configure PX4Flow and teraflow parameters:
+SYS_MC_EST_GROUP = 1
+LPE_FAKE_ORIGIN = 1
+LPE_FUSION = No gps and both flow parameters
 
 Commands that should be added somewhere:
 learn c using lynda learning c course
@@ -205,3 +205,9 @@ SLAM
 rosservice
 rostopic
 rosmsg
+
+
+For EKF2:
+Set EKF2_AID_MASK to PX4Flow setting (2)
+Set SENS_EN_TRONE to 1
+Set EKF2_RNG_AID to 1
