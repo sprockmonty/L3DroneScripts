@@ -7,6 +7,7 @@ import sys
 import time
 from mavros_msgs.msg import OpticalFlowRad #import optical flow message structure
 from mavros_msgs.msg import State  #import state message structure
+from sensor_msgs.msg import Range  #import range message structure
 from geometry_msgs.msg import PoseStamped
 from geometry_msgs.msg import Pose #import position message structures
 from geometry_msgs.msg import TwistStamped #used to set velocity messages
@@ -95,8 +96,10 @@ class stateManager: #class for monitoring and changing state of the controller
         rospy.logwarn("ROS shutdown")
         return False
 
-
-
+def distanceCheck(msg):
+    global range    #import global range
+    print(msg.range) #for debugging
+    range = msg.range #set range = recieved range
 
 def main():
     rospy.init_node('navigator')   # make ros node
@@ -108,6 +111,8 @@ def main():
 
     #Subscriptions
     rospy.Subscriber("/mavros/state", State, stateManagerInstance.stateUpdate)  #get autopilot state including arm state, connection status and mode
+    rospy.Subscriber("/mavros/distance_sensor/hrlv_ez4_pub", Range, distanceCheck)  #get current distance from ground 
+    global range #import global range variable
     ###rospy.Subscriber("/mavros/px4flow/raw/optical_flow_rad", OpticalFlowRad, callback)  #subscribe to position messages
 
 
@@ -123,7 +128,10 @@ def main():
 
 
     while not rospy.is_shutdown():
-        controller.setVel([0.2,0,0])
+        if range < 10: 
+            controller.setVel([0,0,0.5])
+        else:
+            controller.setVel([0.2,0,0])
         controller.publishTargetPose(stateManagerInstance)
         stateManagerInstance.incrementLoop()
         rate.sleep()    #sleep at the set rate

@@ -87,6 +87,7 @@ $ sudo apt-get install python-rosinstall python-rosinstall-generator python-wsto
 
 Install mavros:
 $ sudo apt-get install python-wstool python-rosinstall-generator python-catkin-tools -y
+$ mkdir ~/catkin_ws
 $ wstool init ~/catkin_ws/src
 $ rosinstall_generator --upstream mavros | tee /tmp/mavros.rosinstall
 $ rosinstall_generator mavlink | tee -a /tmp/mavros.rosinstall
