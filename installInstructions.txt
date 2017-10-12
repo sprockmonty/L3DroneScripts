@@ -2,7 +2,7 @@
 Install Vmware Workstation 12 Pro
 Install Ubuntu LTS
 
-Password is rosftw
+Password is l3app 
 
 Run commands with $ from the terminal
 
@@ -10,8 +10,6 @@ Some desktop recording software (useful for recording results)
 $ sudo apt-get install recordmydesktop
 
 Download project from github:
-run
-
 $sudo apt-get install git
 $ mkdir -p ~/src
 $ cd ~/src
@@ -20,9 +18,6 @@ $ cd Firmware
 
 
 
-Test with script gazeboVmWork.sh:
-        1. from terminal (in the Firmware directory) run $ chmod +x gazeboVmWork.sh
-        2. run script using $ ./gazeboVmWork.sh "gazebo"
 
 
 $ sudo usermod -a -G dialout $USER
@@ -91,6 +86,7 @@ $ mkdir ~/catkin_ws
 $ wstool init ~/catkin_ws/src
 $ rosinstall_generator --upstream mavros | tee /tmp/mavros.rosinstall
 $ rosinstall_generator mavlink | tee -a /tmp/mavros.rosinstall
+$ cd ~/catkin_ws
 $ wstool merge -t src /tmp/mavros.rosinstall
 $ wstool update -t src
 $ sudo rosdep install --from-paths src --ignore-src --rosdistro kinetic -y
@@ -105,6 +101,17 @@ Then edit the px4_pluginlists.yaml file and delete the '- distance_sensor' line
 $ cd ~/catkin_ws
 $ catkin build
 
+Install and source gazebo ROS plugins:
+$ sudo apt-get install ros-kinetic-gazebo-ros-pkgs ros-kinetic-gazebo-ros-control
+$ echo "export GAZEBO_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/gazebo-7/plugins:${GAZEBO_PLUGIN_PATH}" >> ~/.bashrc
+$ echo "export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/lib/x86_64-linux-gnu/gazebo-7/plugins" >> ~/.bashrc
+
+
+Test with script gazeboVmWork.sh:
+        1. from terminal (in the Firmware directory) run $ chmod +x gazeboVmWork.sh
+        2. run script using $ ./gazeboVmWork.sh "gazebo"
+
+
 Update packages:
 $ sudo apt-get dist-upgrade
 
@@ -112,6 +119,12 @@ $ sudo apt-get dist-upgrade
 Install QGroundControl:
 $ sudo apt-get install espeak libespeak-dev libudev-dev libsdl2-dev
 Download and install
+
+
+Test gazebo SITL simulation works by navigating to the firmware folder and using command:
+$ ./gazeboVmWork.sh "make posix_sitl_lpe gazebo_iris_opt_flow"
+
+
 
 
 
@@ -131,23 +144,11 @@ Configure PX4Flow and teraflow parameters:
 SYS_MC_EST_GROUP = 1
 LPE_FAKE_ORIGIN = 1
 LPE_FUSION = No gps and both flow parameters
+SENS_EN_TRONE = 1
 
 Commands that should be added somewhere:
-learn c using lynda learning c course
-Learn about subsumption architecture
-Learn about publish/subscribe messaging
 
 
-$ git clone https://github.com/Dronecode/sitl_gazebo.git
-
-
-Add to bashrc file:
-# Set the plugin path so Gazebo finds our model and sim
-export GAZEBO_PLUGIN_PATH=${GAZEBO_PLUGIN_PATH}:$HOME/src/sitl_gazebo/Build
-# Set the model path so Gazebo finds the airframes
-export GAZEBO_MODEL_PATH=${GAZEBO_MODEL_PATH}:$HOME/src/sitl_gazebo/models
-# Set path to sitl_gazebo repository
-export SITL_GAZEBO_PATH=$HOME/src/sitl_gazebo
 
 
 
@@ -197,18 +198,15 @@ ROS Notes:
 FOR OFFBOARD TO WORK THE FOLLOWING MUST BE RUN
 	pxh> param set NAV_RCL_ACT 0
 
-Use /mavros/setpoint_attitude/attitude topic to set attitude?
-Location could use /mavros/setpoint_position/local
-SLAM
-/mavros/local_position is direct output of internal ekf
 
 
 rosservice
 rostopic
 rosmsg
 
-
 For EKF2:
 Set EKF2_AID_MASK to PX4Flow setting (2)
 Set SENS_EN_TRONE to 1
 Set EKF2_RNG_AID to 1
+
+

@@ -125,8 +125,6 @@ def main():
 
 
 
-
-
     while not rospy.is_shutdown():
         if range < 10: 
             controller.setVel([0,0,0.5])
